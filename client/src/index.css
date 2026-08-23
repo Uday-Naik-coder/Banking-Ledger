@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+/* ============================================
+   AEGIS LEDGER — CUSTOM THEME (DARK GLASSMORPHISM)
+   ============================================ */
+
+@theme {
+  --color-base: #07090e;
+  --color-surface-1: #0d121d;
+  --color-surface-2: #131b2c;
+  --color-surface-glass: rgba(16, 24, 40, 0.75);
+  --color-card-glass: rgba(19, 29, 49, 0.65);
+  --color-card-hover: rgba(26, 39, 66, 0.85);
+
+  --color-border-subtle: rgba(255, 255, 255, 0.07);
+  --color-border-glass: rgba(255, 255, 255, 0.12);
+  --color-border-focus: rgba(99, 102, 241, 0.5);
+
+  --color-accent: #6366f1;
+  --color-accent-hover: #4f46e5;
+  --color-cyan-accent: #06b6d4;
+  --color-emerald-accent: #10b981;
+  --color-amber-accent: #f59e0b;
+  --color-red-accent: #f43f5e;
+  --color-violet-accent: #8b5cf6;
+
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--color-base);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  input, select, textarea, button {
+    font-family: inherit;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+@layer utilities {
+  .glass-card {
+    background: var(--color-card-glass);
+    border: 1px solid var(--color-border-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .glass-surface {
+    background: var(--color-surface-glass);
+    border: 1px solid var(--color-border-subtle);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .glass-input {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--color-border-glass);
+    color: var(--color-text-primary);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .glass-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+
+  .glass-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .btn-accent {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .btn-accent:hover {
+    background: linear-gradient(135deg, var(--color-accent-hover), #4338ca);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  .btn-accent:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.12), 0 0 60px rgba(99, 102, 241, 0.06);
+  }
+
+  .glow-emerald {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+  }
+
+  .glow-red {
+    box-shadow: 0 0 20px rgba(244, 63, 94, 0.15);
+  }
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
