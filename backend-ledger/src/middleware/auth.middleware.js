@@ -71,7 +71,7 @@ async function authVerifiedMiddleware(req, res, next) {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-        const user = await userModel.findById(decoded.userId)
+        const user = await userModel.findById(decoded.userId).select("+systemUser")
 
         if (!user) {
             return res.status(401).json({
@@ -79,7 +79,8 @@ async function authVerifiedMiddleware(req, res, next) {
             })
         }
 
-        if (!user.verified) {
+        // System users bypass email verification check
+        if (!user.verified && !user.systemUser) {
             return res.status(403).json({
                 message: "Email not verified. Please verify your email before accessing this resource."
             })
