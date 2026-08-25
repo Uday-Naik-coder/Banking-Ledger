@@ -28,6 +28,12 @@ async function authMiddleware(req, res, next) {
 
         const user = await userModel.findById(decoded.userId)
 
+        if (!user) {
+            return res.status(401).json({
+                message: "Unauthorized access, user not found"
+            })
+        }
+
         req.user = user
 
         return next()
@@ -38,6 +44,58 @@ async function authMiddleware(req, res, next) {
         })
     }
 }
+
+/**
+ * Middleware that requires user to be authenticated AND email-verified.
+ * Use this for protected routes like accounts and transactions.
+ */
+async function authVerifiedMiddleware(req, res, next) {
+
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[ 1 ]
+
+    if (!token) {
+        return res.status(401).json({
+            message: "Unauthorized access, token is missing"
+        })
+    }
+
+    const isBlacklisted = await tokenBlackListModel.findOne({ token })
+
+    if (isBlacklisted) {
+        return res.status(401).json({
+            message: "Unauthorized access, token is invalid"
+        })
+    }
+
+    try {
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+        const user = await userModel.findById(decoded.userId)
+
+        if (!user) {
+            return res.status(401).json({
+                message: "Unauthorized access, user not found"
+            })
+        }
+
+        if (!user.verified) {
+            return res.status(403).json({
+                message: "Email not verified. Please verify your email before accessing this resource."
+            })
+        }
+
+        req.user = user
+
+        return next()
+
+    } catch (err) {
+        return res.status(401).json({
+            message: "Unauthorized access, token is invalid"
+        })
+    }
+}
+
 async function authSystemUserMiddleware(req, res, next) {
 
     const token = req.cookies.token || req.headers.authorization?.split(" ")[ 1 ]
@@ -80,5 +138,6 @@ async function authSystemUserMiddleware(req, res, next) {
 
 module.exports = {
     authMiddleware,
+    authVerifiedMiddleware,
     authSystemUserMiddleware
 }
