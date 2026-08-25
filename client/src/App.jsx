@@ -2,18 +2,19 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchAccounts, clearAccounts } from './store/accountSlice'
 import { AuthForms } from './components/AuthForms'
+import { OtpVerification } from './components/OtpVerification'
 import { Navbar } from './components/Navbar'
 import { UserDashboard } from './components/UserDashboard'
 import { SystemDashboard } from './components/SystemDashboard'
 import { IconRefresh } from './components/Icons'
 
 export default function App() {
-    const { user, loading: authLoading } = useSelector((state) => state.auth)
+    const { user, loading: authLoading, requiresOtp } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
-    // Load accounts when user logs in
+    // Load accounts when user logs in and is verified
     useEffect(() => {
-        if (user) {
+        if (user && user.verified) {
             dispatch(fetchAccounts())
         } else {
             dispatch(clearAccounts())
@@ -37,7 +38,12 @@ export default function App() {
         return <AuthForms />
     }
 
-    // Logged in → show appropriate dashboard based on role
+    // Logged in but not verified → show OTP verification
+    if (requiresOtp || (!user.verified && !user.systemUser)) {
+        return <OtpVerification />
+    }
+
+    // Logged in and verified → show appropriate dashboard based on role
     return (
         <div className="min-h-screen bg-base">
             <Navbar />

@@ -31,6 +31,31 @@ export const registerUser = createAsyncThunk(
     }
 )
 
+export const verifyOtp = createAsyncThunk(
+    'auth/verifyOtp',
+    async ({ otp }, { rejectWithValue }) => {
+        try {
+            const data = await api.verifyOtp({ otp })
+            setStoredUser(data.user)
+            return data
+        } catch (err) {
+            return rejectWithValue(err.message)
+        }
+    }
+)
+
+export const resendOtp = createAsyncThunk(
+    'auth/resendOtp',
+    async (_, { rejectWithValue }) => {
+        try {
+            const data = await api.resendOtp()
+            return data
+        } catch (err) {
+            return rejectWithValue(err.message)
+        }
+    }
+)
+
 export const logoutUser = createAsyncThunk(
     'auth/logoutUser',
     async (_, { rejectWithValue }) => {
@@ -51,11 +76,16 @@ const authSlice = createSlice({
         user: getStoredUser(),
         token: getAuthToken(),
         loading: false,
-        error: null
+        error: null,
+        requiresOtp: false,
+        otpMessage: null
     },
     reducers: {
         clearError(state) {
             state.error = null
+        },
+        clearOtpMessage(state) {
+            state.otpMessage = null
         }
     },
     extraReducers: (builder) => {
@@ -69,6 +99,7 @@ const authSlice = createSlice({
                 state.loading = false
                 state.user = action.payload.user
                 state.token = action.payload.token
+                state.requiresOtp = action.payload.requiresOtp || false
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false
@@ -85,8 +116,42 @@ const authSlice = createSlice({
                 state.loading = false
                 state.user = action.payload.user
                 state.token = action.payload.token
+                state.requiresOtp = action.payload.requiresOtp || false
             })
             .addCase(registerUser.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
+
+        // Verify OTP
+        builder
+            .addCase(verifyOtp.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(verifyOtp.fulfilled, (state, action) => {
+                state.loading = false
+                state.user = action.payload.user
+                state.requiresOtp = false
+                state.otpMessage = null
+            })
+            .addCase(verifyOtp.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
+
+        // Resend OTP
+        builder
+            .addCase(resendOtp.pending, (state) => {
+                state.loading = true
+                state.error = null
+                state.otpMessage = null
+            })
+            .addCase(resendOtp.fulfilled, (state, action) => {
+                state.loading = false
+                state.otpMessage = action.payload.message
+            })
+            .addCase(resendOtp.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
             })
@@ -97,9 +162,11 @@ const authSlice = createSlice({
                 state.user = null
                 state.token = null
                 state.error = null
+                state.requiresOtp = false
+                state.otpMessage = null
             })
     }
 })
 
-export const { clearError } = authSlice.actions
+export const { clearError, clearOtpMessage } = authSlice.actions
 export default authSlice.reducer

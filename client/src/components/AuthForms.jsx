@@ -90,7 +90,7 @@ export const AuthForms = () => {
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    placeholder="e.g. Ankur Nayak"
+                                    placeholder="e.g. Uday Naik"
                                     className="glass-input w-full px-4 py-3 rounded-xl text-sm"
                                     required={!isLogin}
                                 />
