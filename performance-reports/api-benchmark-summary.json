@@ -1,0 +1,128 @@
+[
+  {
+    "id": "health_check",
+    "endpoint": "GET / (Health Check)",
+    "method": "GET",
+    "totalSamples": 30,
+    "successCount": 30,
+    "failCount": 0,
+    "errorRatePercent": 0,
+    "statusCodes": {
+      "200": 30
+    },
+    "minMs": 1.24,
+    "maxMs": 67.87,
+    "avgMs": 4.11,
+    "medianMs": 1.84,
+    "p95Ms": 3.46,
+    "throughputReqSec": 30.16
+  },
+  {
+    "id": "get_accounts",
+    "endpoint": "GET /api/accounts/ (User Accounts)",
+    "method": "GET",
+    "totalSamples": 30,
+    "successCount": 30,
+    "failCount": 0,
+    "errorRatePercent": 0,
+    "statusCodes": {
+      "200": 30
+    },
+    "minMs": 4.39,
+    "maxMs": 7.28,
+    "avgMs": 5.55,
+    "medianMs": 5.54,
+    "p95Ms": 6.54,
+    "throughputReqSec": 32.32
+  },
+  {
+    "id": "get_balance",
+    "endpoint": "GET /api/accounts/balance/:id (Ledger Aggregation Balance)",
+    "method": "GET",
+    "totalSamples": 30,
+    "successCount": 30,
+    "failCount": 0,
+    "errorRatePercent": 0,
+    "statusCodes": {
+      "200": 30
+    },
+    "minMs": 6.89,
+    "maxMs": 12.21,
+    "avgMs": 7.96,
+    "medianMs": 7.73,
+    "p95Ms": 9.36,
+    "throughputReqSec": 31.69
+  },
+  {
+    "id": "get_bank_stats",
+    "endpoint": "GET /api/transactions/bank-stats (Bank Network Statistics)",
+    "method": "GET",
+    "totalSamples": 30,
+    "successCount": 30,
+    "failCount": 0,
+    "errorRatePercent": 0,
+    "statusCodes": {
+      "200": 30
+    },
+    "minMs": 24.79,
+    "maxMs": 30.19,
+    "avgMs": 27.13,
+    "medianMs": 26.91,
+    "p95Ms": 30.1,
+    "throughputReqSec": 17.32
+  },
+  {
+    "id": "get_ledger",
+    "endpoint": "GET /api/transactions/ledger/:id (Account Ledger Entries)",
+    "method": "GET",
+    "totalSamples": 30,
+    "successCount": 30,
+    "failCount": 0,
+    "errorRatePercent": 0,
+    "statusCodes": {
+      "200": 30
+    },
+    "minMs": 10.35,
+    "maxMs": 18.62,
+    "avgMs": 14.48,
+    "medianMs": 14.77,
+    "p95Ms": 17.19,
+    "throughputReqSec": 22.26
+  },
+  {
+    "id": "auth_validation",
+    "endpoint": "POST /api/auth/login (Auth Validation / Bcrypt Check)",
+    "method": "POST",
+    "totalSamples": 20,
+    "successCount": 20,
+    "failCount": 0,
+    "errorRatePercent": 0,
+    "statusCodes": {
+      "401": 20
+    },
+    "minMs": 2.15,
+    "maxMs": 5.87,
+    "avgMs": 3.23,
+    "medianMs": 3.03,
+    "p95Ms": 4.04,
+    "throughputReqSec": 31.96
+  },
+  {
+    "id": "post_deposit",
+    "endpoint": "POST /api/transactions/deposit (Atomic Ledger Deposit)",
+    "method": "POST",
+    "totalSamples": 20,
+    "successCount": 20,
+    "failCount": 0,
+    "errorRatePercent": 0,
+    "statusCodes": {
+      "201": 20
+    },
+    "minMs": 5.84,
+    "maxMs": 9.18,
+    "avgMs": 7.33,
+    "medianMs": 7.22,
+    "p95Ms": 8.94,
+    "throughputReqSec": 31.91
+  }
+]

@@ -82,8 +82,6 @@ export const api = {
     register: (userData) => axiosInstance.post('/auth/register', userData),
     login: (credentials) => axiosInstance.post('/auth/login', credentials),
     logout: () => axiosInstance.post('/auth/logout'),
-    verifyOtp: (data) => axiosInstance.post('/auth/verify-otp', data),
-    resendOtp: () => axiosInstance.post('/auth/resend-otp'),
 
     // Accounts
     createAccount: () => axiosInstance.post('/accounts'),

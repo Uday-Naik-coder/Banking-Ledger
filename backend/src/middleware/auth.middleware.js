@@ -46,8 +46,8 @@ async function authMiddleware(req, res, next) {
 }
 
 /**
- * Middleware that requires user to be authenticated AND email-verified.
- * Use this for protected routes like accounts and transactions.
+ * Middleware that requires user to be authenticated.
+ * (Email verification check removed — OTP flow has been removed)
  */
 async function authVerifiedMiddleware(req, res, next) {
 
@@ -76,13 +76,6 @@ async function authVerifiedMiddleware(req, res, next) {
         if (!user) {
             return res.status(401).json({
                 message: "Unauthorized access, user not found"
-            })
-        }
-
-        // System users bypass email verification check
-        if (!user.verified && !user.systemUser) {
-            return res.status(403).json({
-                message: "Email not verified. Please verify your email before accessing this resource."
             })
         }
 

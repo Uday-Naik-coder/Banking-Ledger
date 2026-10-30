@@ -26,11 +26,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ankurdotio/backend-ledger.git"
+    "url": "git+https://github.com/Uday-Naik-coder/backend-ledger.git"
   },
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/ankurdotio/backend-ledger/issues"
+    "url": "https://github.com/Uday-Naik-coder/backend-ledger/issues"
   },
-  "homepage": "https://github.com/ankurdotio/backend-ledger#readme"
+  "homepage": "https://github.com/Uday-Naik-coder/backend-ledger#readme"
 }

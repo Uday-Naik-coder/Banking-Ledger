@@ -1,0 +1,78 @@
+name: Build & Push Docker Images to Docker Hub
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  DOCKERHUB_USERNAME: udaynaik07
+  BACKEND_IMAGE: udaynaik07/banking-ledger-backend
+  CLIENT_IMAGE: udaynaik07/banking-ledger-client
+
+jobs:
+  build-and-push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Set up Docker Buildx (for multi-platform & caching)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: udaynaik07
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 4. Generate image metadata (tags & labels) for the backend
+      - name: Backend image metadata
+        id: meta-backend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BACKEND_IMAGE }}
+          tags: |
+            type=sha,prefix=
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # 5. Build & push the backend image
+      - name: Build & push backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 6. Generate image metadata for the client
+      - name: Client image metadata
+        id: meta-client
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.CLIENT_IMAGE }}
+          tags: |
+            type=sha,prefix=
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # 7. Build & push the client image
+      - name: Build & push client
+        uses: docker/build-push-action@v6
+        with:
+          context: ./client
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta-client.outputs.tags }}
+          labels: ${{ steps.meta-client.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+

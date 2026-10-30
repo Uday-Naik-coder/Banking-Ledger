@@ -1,9 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    service: 'gmail',
     auth: {
         type: 'OAuth2',
         user: process.env.EMAIL_USER,
@@ -66,29 +64,10 @@ async function sendTransactionFailureEmail(userEmail, name, amount, toAccount) {
     await sendEmail(userEmail, subject, text, html);
 }
 
-async function sendOtpEmail(userEmail, name, otp) {
-    const subject = 'Verify Your Email — AegisLedger';
-    const text = `Hello ${name},\n\nYour OTP verification code is: ${otp}\n\nThis code expires in 10 minutes. Do not share it with anyone.\n\nBest regards,\nThe AegisLedger Team`;
-    const html = `
-        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 480px; margin: 0 auto; background: #0d121d; border-radius: 16px; padding: 32px; color: #f8fafc;">
-            <h2 style="text-align: center; color: #6366f1; margin-bottom: 8px;">AegisLedger</h2>
-            <p style="text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 24px;">Email Verification</p>
-            <p style="color: #f8fafc;">Hello ${name},</p>
-            <p style="color: #94a3b8;">Use the following code to verify your email address:</p>
-            <div style="text-align: center; margin: 24px 0;">
-                <span style="display: inline-block; font-size: 32px; font-weight: 700; letter-spacing: 8px; color: #6366f1; background: rgba(99, 102, 241, 0.1); padding: 16px 32px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.2);">${otp}</span>
-            </div>
-            <p style="color: #f43f5e; font-size: 13px; text-align: center;">This code expires in 10 minutes.</p>
-            <p style="color: #64748b; font-size: 12px; text-align: center; margin-top: 24px;">If you did not request this, please ignore this email.</p>
-        </div>
-    `;
 
-    await sendEmail(userEmail, subject, text, html);
-}
 
 module.exports = {
     sendRegistrationEmail,
     sendTransactionEmail,
-    sendTransactionFailureEmail,
-    sendOtpEmail
+    sendTransactionFailureEmail
 };

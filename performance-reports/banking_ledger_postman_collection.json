@@ -1,0 +1,253 @@
+{
+  "info": {
+    "_postman_id": "c62b404d-e6b7-4c07-9878-1a52b82cf4f1",
+    "name": "Banking Ledger API Performance Suite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YWFjNTAwZDI2Y2U2Njg4ZDk5ZDJhMGIiLCJpYXQiOjE3OTE2MjU4MDMsImV4cCI6MTc5MTcxMjIwM30.IkqMz1YrJsDf_i8izxMVYNodmyfWb5mwZ5g__5x8YDg"
+    },
+    {
+      "key": "accountId",
+      "value": "6aac500d26ce6688d99d2a0c"
+    },
+    {
+      "key": "idempotencyKey",
+      "value": "pm-initial"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check - GET /",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response time is under 500ms', function () { pm.expect(pm.response.responseTime).to.be.below(500); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get User Accounts - GET /api/accounts/",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response has accounts array', function () { var json = pm.response.json(); pm.expect(json).to.have.property('accounts'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/accounts/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "accounts",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Account Balance - GET /api/accounts/balance/:accountId",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response has balance', function () { var json = pm.response.json(); pm.expect(json).to.have.property('balance'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/accounts/balance/{{accountId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "accounts",
+            "balance",
+            "{{accountId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Bank Statistics - GET /api/transactions/bank-stats",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response has stats', function () { var json = pm.response.json(); pm.expect(json).to.have.property('stats'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/transactions/bank-stats",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "transactions",
+            "bank-stats"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Account Ledger - GET /api/transactions/ledger/:accountId",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/transactions/ledger/{{accountId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "transactions",
+            "ledger",
+            "{{accountId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Deposit Funds - POST /api/transactions/deposit",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.variables.set('idempotencyKey', 'pm-deposit-' + Date.now() + '-' + Math.floor(Math.random() * 100000));"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201 or 200', function () { pm.expect([200, 201]).to.include(pm.response.code); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 10,\n  \"idempotencyKey\": \"{{idempotencyKey}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/transactions/deposit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "transactions",
+            "deposit"
+          ]
+        }
+      }
+    }
+  ]
+}
