@@ -1,6 +1,8 @@
 const express = require("express")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+const path = require("path")
+const fs = require("fs")
 
 const app = express()
 
@@ -29,6 +31,13 @@ app.use(express.json())
 app.use(cookieParser())
 
 /**
+ * - Health Check Endpoint
+ */
+app.get("/api/health", (req, res) => {
+    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() })
+})
+
+/**
  * - Routes required
  */
 const authRouter = require("./routes/auth.routes")
@@ -38,13 +47,26 @@ const transactionRoutes = require("./routes/transaction.routes")
 /**
  * - Use Routes
  */
-
-app.get("/", (req, res) => {
-    res.send("Ledger Service is up and running")
-})
-
 app.use("/api/auth", authRouter)
 app.use("/api/accounts", accountRouter)
 app.use("/api/transactions", transactionRoutes)
+
+/**
+ * - Serve Frontend static assets in production/container
+ */
+const publicDir = path.join(__dirname, "../public")
+if (fs.existsSync(publicDir)) {
+    app.use(express.static(publicDir))
+    app.use((req, res, next) => {
+        if (req.method === "GET" && !req.path.startsWith("/api")) {
+            return res.sendFile(path.join(publicDir, "index.html"))
+        }
+        next()
+    })
+} else {
+    app.get("/", (req, res) => {
+        res.send("Ledger Service is up and running")
+    })
+}
 
 module.exports = app

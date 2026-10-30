@@ -1,27 +1,18 @@
 version: "3.9"
 
 services:
-  backend:
-    build: ./backend
-    container_name: banking-ledger-backend
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: udaynaik07/banking-ledger:latest
+    container_name: banking-ledger-app
     ports:
       - "3000:3000"
     env_file:
       - ./backend/.env
     depends_on:
       - mongo
-    restart: unless-stopped
-
-  client:
-    build:
-      context: ./client
-      args:
-        VITE_API_URL: http://localhost:3000
-    container_name: banking-ledger-client
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
     restart: unless-stopped
 
   mongo:
@@ -35,4 +26,3 @@ services:
 
 volumes:
   mongo-data:
-
